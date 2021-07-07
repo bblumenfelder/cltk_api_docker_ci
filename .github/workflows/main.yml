@@ -31,8 +31,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            mkdir cltk_api_docker_ci
             cd cltk_api_docker_ci/
+            git init
+            git config --global user.name "bblumenfelder"
+            git config --global user.email "benedikt.blumenfelder@gmail.com"
             git pull https://github.com/bblumenfelder/cltk_api_docker_ci.git
             docker-compose up --build
             exit
