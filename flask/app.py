@@ -1,5 +1,6 @@
 # Basic imports
 from flask import Flask, request, jsonify
+from pprint import pprint
 import json
 
 # CLTK Corpora
@@ -75,7 +76,9 @@ def macronize1():
 def macronize2():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_tnt')
+    pprint(macronizer)
     result = macronizer.macronize_tags(sentence)
+    pprint(result)
     return result
 # ROUTE MAMCRONIZE3
 @app.route("/macronize3")
