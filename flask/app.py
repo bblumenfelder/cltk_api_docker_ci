@@ -69,17 +69,14 @@ def lemmatize(form):
 def macronize1():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
-    result = macronizer.macronize_text(sentence)
-    return json.dumps(result)
+    list = macronizer.macronize_text(sentence)
+    return json.dumps(list)
 # ROUTE MAMCRONIZE2
 @app.route("/macronize2")
 def macronize2():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_tnt')
-    pprint(macronizer)
-    result = macronizer.macronize_tags(sentence)
-    pprint(result)
-    return result
+    return json.dumps(macronizer)
 # ROUTE MAMCRONIZE3
 @app.route("/macronize3")
 def macronize3():

@@ -31,6 +31,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            docker image prune
             cd cltk_api_docker_ci/
             git init
             git config --global user.name "bblumenfelder"
