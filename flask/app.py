@@ -48,7 +48,7 @@ def tag(form):
     return json.dumps(list)
 # ROUTE: STEM
 @app.route("/stem/<form>")
-def stem(form):
+def get_stem(form):
     string = stem(form)
     return json.dumps(string)
 # ROUTE DECLINE
@@ -69,13 +69,13 @@ def macronize1():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
     result = macronizer.macronize_text(sentence)
-    return result
+    return json.dumps(result)
 # ROUTE MAMCRONIZE2
 @app.route("/macronize2")
 def macronize2():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_tnt')
-    result = macronizer.macronize_text(sentence)
+    result = macronizer.macronize_tags(sentence)
     return result
 # ROUTE MAMCRONIZE3
 @app.route("/macronize3")
