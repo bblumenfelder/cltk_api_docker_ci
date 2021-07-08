@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: connect to droplet; pull from repo; docker-compose
-        timeout-minutes: 1 # Times out after 1 minute
+        timeout-minutes: 10 # Times out after 1 minute
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}

@@ -63,13 +63,26 @@ def lemmatize(form):
     lemmatizer = LatinBackoffLemmatizer()
     list = lemmatizer.lemmatize(form)
     return json.dumps(list)
-# ROUTE MAMCRONIZE
-@app.route("/macronize")
-def macronize():
+# ROUTE MAMCRONIZE1
+@app.route("/macronize1")
+def macronize1():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
     result = macronizer.macronize_text(sentence)
-    print(result)
+    return result
+# ROUTE MAMCRONIZE2
+@app.route("/macronize2")
+def macronize2():
+    sentence = request.form['sentence']
+    macronizer = Macronizer('tag_tnt')
+    result = macronizer.macronize_text(sentence)
+    return result
+# ROUTE MAMCRONIZE3
+@app.route("/macronize3")
+def macronize3():
+    sentence = request.form['sentence']
+    macronizer = Macronizer('tag_crf')
+    result = macronizer.macronize_text(sentence)
     return result
 # ROUTE SCAN
 @app.route("/scan")
