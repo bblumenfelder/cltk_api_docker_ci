@@ -34,7 +34,7 @@ jobs:
             docker image prune
             touch /tmp/uwsgi.log
             chown -R www-data:www-data /tmp/
-            chmod -R 777 www-data:www-data /tmp/uwsgi.log
+            chmod -R 777 /tmp/uwsgi.log
             cd cltk_api_docker_ci/
             git init
             git config --global user.name "bblumenfelder"
