@@ -32,10 +32,9 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             docker image prune
-            mkdir /var/log/uwsgi/
-            touch /var/log/uwsgi/uwsgi.log
-            chown -R www-data:www-data /var/log/uwsgi/
-            chmod -R 777 www-data:www-data /var/log/uwsgi/
+            touch /tmp/uwsgi.log
+            chown -R www-data:www-data /tmp/
+            chmod -R 777 www-data:www-data /tmp/uwsgi.log
             cd cltk_api_docker_ci/
             git init
             git config --global user.name "bblumenfelder"
