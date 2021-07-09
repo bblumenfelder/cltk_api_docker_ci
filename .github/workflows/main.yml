@@ -35,7 +35,7 @@ jobs:
             mkdir /var/log/uwsgi/
             touch /var/log/uwsgi/uwsgi.log
             chown -R www-data:www-data /var/log/uwsgi/
-            chown -R 777 www-data:www-data /var/log/uwsgi/
+            chmod -R 777 www-data:www-data /var/log/uwsgi/
             cd cltk_api_docker_ci/
             git init
             git config --global user.name "bblumenfelder"
