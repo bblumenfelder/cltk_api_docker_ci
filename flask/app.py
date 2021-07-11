@@ -4,6 +4,10 @@ from pprint import pprint
 import json
 import jsonpickle
 
+# NLTK Dependencies
+import stanza
+stanza.download("la") 
+
 # CLTK Corpora
 from cltk.data.fetch import FetchCorpus
 corpus_importer = FetchCorpus(language="lat")
