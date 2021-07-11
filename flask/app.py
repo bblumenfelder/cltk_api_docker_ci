@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from pprint import pprint
 import json
+import jsonpickle
 
 # CLTK Corpora
 from cltk.data.fetch import FetchCorpus
@@ -40,30 +41,41 @@ from cltk.prosody.lat.scanner import Scansion
 # CLTK Hexameter Scanner
 from cltk.prosody.lat.hexameter_scanner import HexameterScanner
 
+# CLTK NLP-Pipeline
+from cltk import NLP
+
+#CLTK Dependency Module
+from cltk.dependency.tree import DependencyTree
+
 app = Flask(__name__)
+
 # ROUTE: TAG
 @app.route("/tag/<form>")
 def tag(form):
     tagger = POSTag("lat")
     list = tagger.tag_ngram_123_backoff(form)
     return json.dumps(list)
+
 # ROUTE: STEM
 @app.route("/stem/<form>")
 def get_stem(form):
     string = stem(form)
     return json.dumps(string)
+
 # ROUTE DECLINE
 @app.route("/decline/<form>")
 def decline(form):
     decliner = CollatinusDecliner()
     list = decliner.decline(form)
     return json.dumps(list)
+
 # ROUTE LEMMATIZE
 @app.route("/lemmatize/<form>")
 def lemmatize(form):
     lemmatizer = LatinBackoffLemmatizer()
     list = lemmatizer.lemmatize(form)
     return json.dumps(list)
+
 # ROUTE MAMCRONIZE1
 @app.route("/macronize")
 def macronize1():
@@ -71,6 +83,7 @@ def macronize1():
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return json.dumps(list)
+
 # ROUTE MAMCRONIZE2
 @app.route("/macronize-utf")
 def macronize_utf():
@@ -78,6 +91,7 @@ def macronize_utf():
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return list
+
 # ROUTE SCAN
 @app.route("/scan")
 def scan():
@@ -95,6 +109,7 @@ def macronize_scan():
     sentence_macronized = macronizer.macronize_text(sentence)
     result = scanner.scan_text(sentence_macronized)
     return result
+
 # ROUTE HEXAMETER
 @app.route("/hexameter")
 def hexameter():
@@ -102,6 +117,7 @@ def hexameter():
     hexameter_scanner = HexameterScanner()
     list = hexameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
+
 # ROUTE PENTAMETER
 @app.route("/pentameter")
 def pentameter():
@@ -109,6 +125,7 @@ def pentameter():
     pentameter_scanner = PentameterScanner()
     list = pentameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
+
 # ROUTE HENDEKASYLLABUS
 @app.route("/hendecasyllabus")
 def hendecasyllabus():
@@ -116,7 +133,27 @@ def hendecasyllabus():
     hendecasyllabus_scanner = HendecasyllableScanner()
     list = hendecasyllabus_scanner.scan(verse)
     return json.dumps(list.__dict__)
-# ROUTE HEXAMETER
+
+# ROUTE ANALYSIS
+@app.route('/analyze')
+def analysis():
+    text = request.form['text']
+    cltk_nlp = NLP(language="lat")
+    cltk_nlp.pipeline.processes.pop(-1)
+    cltk_doc = cltk_nlp.analyze(text=text)
+    return jsonpickle(cltk_doc, unpicklable=False)
+
+# ROUTE DEPENDENCY TREE
+@app.route('/dependency-tree')
+def dependency():
+    sentence = request.form['sentence']
+    cltk_nlp = NLP(language="lat")
+    cltk_nlp.pipeline.processes.pop(-1)
+    cltk_doc = cltk_nlp.analyze(text=sentence)
+    dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
+    return dep_tree.get_dependencies()
+
+# ROUTE TEST
 @app.route("/test")
 def test():
     return request.form['sentence']
