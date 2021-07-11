@@ -33,12 +33,8 @@ jobs:
           script: |
             docker image prune
             touch /tmp/uwsgi.log
-            chown -R www-data:www-data /tmp/
-            chmod -R 777 /tmp/uwsgi.log
             cd cltk_api_docker_ci/
             git init
-            git config --global user.name "bblumenfelder"
-            git config --global user.email "benedikt.blumenfelder@gmail.com"
             git pull https://github.com/bblumenfelder/cltk_api_docker_ci.git
             docker-compose up --build
             exit
