@@ -65,25 +65,21 @@ def lemmatize(form):
     list = lemmatizer.lemmatize(form)
     return json.dumps(list)
 # ROUTE MAMCRONIZE1
-@app.route("/macronize1")
+@app.route("/macronize")
 def macronize1():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return json.dumps(list)
 # ROUTE MAMCRONIZE2
-@app.route("/macronize2")
-def macronize2():
+@app.route("/macronize-utf")
+def macronize_utf():
     sentence = request.form['sentence']
-    macronizer = Macronizer('tag_tnt')
-    return json.dumps(macronizer)
+    macronizer = Macronizer('tag_ngram_123_backoff')
+    list = macronizer.macronize_text(sentence)
+    return list
 # ROUTE MAMCRONIZE3
-@app.route("/macronize3")
-def macronize3():
-    sentence = request.form['sentence']
-    macronizer = Macronizer('tag_crf')
-    result = macronizer.macronize_text(sentence)
-    return result
+
 # ROUTE SCAN
 @app.route("/scan")
 def scan():
@@ -100,7 +96,7 @@ def macronize_scan():
     macronizer = Macronizer('tag_ngram_123_backoff')
     sentence_macronized = macronizer.macronize_text(sentence)
     result = scanner.scan_text(sentence_macronized)
-    return json.dumps(result)
+    return result
 # ROUTE HEXAMETER
 @app.route("/hexameter")
 def hexameter():
