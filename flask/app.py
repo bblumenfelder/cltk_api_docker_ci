@@ -150,7 +150,7 @@ def analysis():
     cltk_nlp = NLP(language="lat")
     cltk_nlp.pipeline.processes.pop(-1)
     cltk_doc = cltk_nlp.analyze(text=text)
-    return jsonpickle(cltk_doc, unpicklable=False)
+    return jsonpickle(cltk_doc.sentences[0], unpicklable=False)
 
 # ROUTE DEPENDENCY TREE
 @app.route('/dependency-tree')
@@ -160,7 +160,7 @@ def dependency():
     cltk_nlp.pipeline.processes.pop(-1)
     cltk_doc = cltk_nlp.analyze(text=sentence)
     dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
-    return dep_tree.get_dependencies()
+    return json.dumps(dep_tree.get_dependencies())
 
 # ROUTE TEST
 @app.route("/test")
