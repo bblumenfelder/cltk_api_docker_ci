@@ -78,15 +78,13 @@ def macronize_utf():
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return list
-# ROUTE MAMCRONIZE3
-
 # ROUTE SCAN
 @app.route("/scan")
 def scan():
     sentence = request.form['sentence']
     scanner = Scansion()
     list = scanner.scan_text(sentence)
-    return json.dumps(list)
+    return list
     
 # ROUTE MACRONIZE + SCAN
 @app.route("/macro-scan")
@@ -100,16 +98,28 @@ def macronize_scan():
 # ROUTE HEXAMETER
 @app.route("/hexameter")
 def hexameter():
-    sentence = request.form['sentence']
+    verse = request.form['verse']
     hexameter_scanner = HexameterScanner()
-    list = hexameter_scanner.scan(sentence)
+    list = hexameter_scanner.scan(verse)
+    return json.dumps(list.__dict__)
+# ROUTE PENTAMETER
+@app.route("/pentameter")
+def pentameter():
+    verse = request.form['verse']
+    pentameter_scanner = PentameterScanner()
+    list = pentameter_scanner.scan(verse)
+    return json.dumps(list.__dict__)
+# ROUTE HENDEKASYLLABUS
+@app.route("/hendecasyllabus")
+def hendecasyllabus():
+    verse = request.form['verse']
+    hendecasyllabus_scanner = HendecasyllableScanner()
+    list = hendecasyllabus_scanner.scan(verse)
     return json.dumps(list.__dict__)
 # ROUTE HEXAMETER
 @app.route("/test")
 def test():
     return request.form['sentence']
-
-
 
 
 if __name__ == "__main__":
