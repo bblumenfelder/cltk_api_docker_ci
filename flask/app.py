@@ -4,9 +4,14 @@ from pprint import pprint
 import json
 import jsonpickle
 
+
+
 # NLTK Dependencies
 import stanza
 stanza.download("la") 
+model_url = "http://vectors.nlpl.eu/repository/20/56.zip"
+from cltk.utils import CLTK_DATA_DIR, get_file_with_progress_bar
+get_file_with_progress_bar(model_url="https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.la.vec", file_path="/root/cltk_data/lat/embeddings/fasttext/wiki.la.vec")
 
 # CLTK Corpora
 from cltk.data.fetch import FetchCorpus
