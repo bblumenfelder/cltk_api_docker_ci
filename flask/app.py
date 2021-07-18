@@ -1,5 +1,6 @@
 # Basic imports
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 from pprint import pprint
 import json
 import jsonpickle
@@ -57,6 +58,9 @@ from cltk import NLP
 from cltk.dependency.tree import DependencyTree
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 # ROUTE: TAG
 @app.route("/tag/<form>")
@@ -87,6 +91,7 @@ def lemmatize(form):
 
 # ROUTE MAMCRONIZE1
 @app.route("/macronize")
+@cross_origin()
 def macronize1():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
@@ -95,6 +100,7 @@ def macronize1():
 
 # ROUTE MAMCRONIZE2
 @app.route("/macronize-utf")
+@cross_origin()
 def macronize_utf():
     sentence = request.form['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
@@ -103,6 +109,7 @@ def macronize_utf():
 
 # ROUTE SCAN
 @app.route("/scan")
+@cross_origin()
 def scan():
     sentence = request.form['sentence']
     scanner = Scansion()
@@ -111,6 +118,7 @@ def scan():
     
 # ROUTE MACRONIZE + SCAN
 @app.route("/macro-scan")
+@cross_origin()
 def macronize_scan():
     sentence = request.form['sentence']
     scanner = Scansion()
@@ -121,6 +129,7 @@ def macronize_scan():
 
 # ROUTE HEXAMETER
 @app.route("/hexameter")
+@cross_origin()
 def hexameter():
     verse = request.form['verse']
     hexameter_scanner = HexameterScanner()
@@ -129,6 +138,7 @@ def hexameter():
 
 # ROUTE PENTAMETER
 @app.route("/pentameter")
+@cross_origin()
 def pentameter():
     verse = request.form['verse']
     pentameter_scanner = PentameterScanner()
@@ -137,6 +147,7 @@ def pentameter():
 
 # ROUTE HENDEKASYLLABUS
 @app.route("/hendecasyllabus")
+@cross_origin()
 def hendecasyllabus():
     verse = request.form['verse']
     hendecasyllabus_scanner = HendecasyllableScanner()
@@ -145,6 +156,7 @@ def hendecasyllabus():
 
 # ROUTE ANALYSIS
 @app.route('/analyze')
+@cross_origin()
 def analysis():
     text = request.form['text']
     cltk_nlp = NLP(language="lat")
@@ -154,6 +166,7 @@ def analysis():
 
 # ROUTE DEPENDENCY TREE
 @app.route('/dependency-tree')
+@cross_origin()
 def dependency():
     sentence = request.form['sentence']
     cltk_nlp = NLP(language="lat")
@@ -163,9 +176,21 @@ def dependency():
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
 
 # ROUTE TEST
-@app.route("/test")
-def test():
-    return request.form['sentence']
+@app.route("/test1")
+def test1():
+    return request.json
+# ROUTE TEST
+@app.route("/test2")
+def test2():
+    return request.get_data()
+# ROUTE TEST
+@app.route("/test3")
+def test3():
+    return request.data
+# ROUTE TEST
+@app.route("/test4")
+def test4():
+    return request.get_json(force=True)
 
 
 if __name__ == "__main__":
