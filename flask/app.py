@@ -93,7 +93,8 @@ def lemmatize(form):
 @app.route("/macronize")
 @cross_origin()
 def macronize1():
-    sentence = request.form['sentence']
+    data = request.get_json(force=True)
+    sentence = data['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return json.dumps(list)
@@ -102,7 +103,8 @@ def macronize1():
 @app.route("/macronize-utf")
 @cross_origin()
 def macronize_utf():
-    sentence = request.form['sentence']
+    data = request.get_json(force=True)
+    sentence = data['sentence']
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return list
@@ -111,7 +113,8 @@ def macronize_utf():
 @app.route("/scan")
 @cross_origin()
 def scan():
-    sentence = request.form['sentence']
+    data = request.get_json(force=True)
+    sentence = data['sentence']
     scanner = Scansion()
     list = scanner.scan_text(sentence)
     return list
@@ -120,7 +123,8 @@ def scan():
 @app.route("/macro-scan")
 @cross_origin()
 def macronize_scan():
-    sentence = request.form['sentence']
+    data = request.get_json(force=True)
+    sentence = data['sentence']
     scanner = Scansion()
     macronizer = Macronizer('tag_ngram_123_backoff')
     sentence_macronized = macronizer.macronize_text(sentence)
@@ -131,7 +135,8 @@ def macronize_scan():
 @app.route("/hexameter")
 @cross_origin()
 def hexameter():
-    verse = request.form['verse']
+    data = request.get_json(force=True)
+    verse = data['verse']
     hexameter_scanner = HexameterScanner()
     list = hexameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
@@ -140,7 +145,8 @@ def hexameter():
 @app.route("/pentameter")
 @cross_origin()
 def pentameter():
-    verse = request.form['verse']
+    data = request.get_json(force=True)
+    verse = data['verse']
     pentameter_scanner = PentameterScanner()
     list = pentameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
@@ -149,7 +155,8 @@ def pentameter():
 @app.route("/hendecasyllabus")
 @cross_origin()
 def hendecasyllabus():
-    verse = request.form['verse']
+    data = request.get_json(force=True)
+    verse = data['verse']
     hendecasyllabus_scanner = HendecasyllableScanner()
     list = hendecasyllabus_scanner.scan(verse)
     return json.dumps(list.__dict__)
@@ -158,7 +165,8 @@ def hendecasyllabus():
 @app.route('/analyze')
 @cross_origin()
 def analysis():
-    text = request.form['text']
+    data = request.get_json(force=True)
+    text = data['text']
     cltk_nlp = NLP(language="lat")
     cltk_nlp.pipeline.processes.pop(-1)
     cltk_doc = cltk_nlp.analyze(text=text)
@@ -168,32 +176,14 @@ def analysis():
 @app.route('/dependency-tree')
 @cross_origin()
 def dependency():
-    sentence = request.form['sentence']
+    data = request.get_json(force=True)
+    sentence = data['sentence']
     cltk_nlp = NLP(language="lat")
     cltk_nlp.pipeline.processes.pop(-1)
     cltk_doc = cltk_nlp.analyze(text=sentence)
     dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
 
-# ROUTE TEST
-@app.route("/test1", methods=['POST'])
-@cross_origin()
-def test1():
-    return request.json["sentence"]
-# ROUTE TEST
-@app.route("/test2")
-def test2():
-    return request.get_data()["sentence"]
-# ROUTE TEST
-@app.route("/test3")
-def test3():
-    return request.data["sentence"]
-# ROUTE TEST
-@app.route("/test4",  methods=['POST'])
-@cross_origin()
-def test4():
-    data = request.get_json(force=True)
-    return data["sentence"]
 
 
 if __name__ == "__main__":
