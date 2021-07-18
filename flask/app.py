@@ -176,7 +176,8 @@ def dependency():
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
 
 # ROUTE TEST
-@app.route("/test1")
+@app.route("/test1", methods=['POST'])
+@cross_origin()
 def test1():
     return request.json["sentence"]
 # ROUTE TEST
@@ -188,9 +189,11 @@ def test2():
 def test3():
     return request.data["sentence"]
 # ROUTE TEST
-@app.route("/test4")
+@app.route("/test4",  methods=['POST'])
+@cross_origin()
 def test4():
-    return request.get_json(force=True)["sentence"]
+    data = request.get_json(force=True)
+    return data["sentence"]
 
 
 if __name__ == "__main__":
