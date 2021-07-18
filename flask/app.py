@@ -178,19 +178,19 @@ def dependency():
 # ROUTE TEST
 @app.route("/test1")
 def test1():
-    return request.json
+    return request.json["sentence"]
 # ROUTE TEST
 @app.route("/test2")
 def test2():
-    return request.get_data()
+    return request.get_data()["sentence"]
 # ROUTE TEST
 @app.route("/test3")
 def test3():
-    return request.data
+    return request.data["sentence"]
 # ROUTE TEST
 @app.route("/test4")
 def test4():
-    return request.get_json(force=True)
+    return request.get_json(force=True)["sentence"]
 
 
 if __name__ == "__main__":
