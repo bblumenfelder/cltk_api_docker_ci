@@ -90,7 +90,7 @@ def lemmatize(form):
     return json.dumps(list)
 
 # ROUTE MAMCRONIZE1
-@app.route("/macronize")
+@app.route("/macronize", methods=['POST'])
 @cross_origin()
 def macronize1():
     data = request.get_json(force=True)
@@ -100,7 +100,7 @@ def macronize1():
     return json.dumps(list)
 
 # ROUTE MAMCRONIZE2
-@app.route("/macronize-utf")
+@app.route("/macronize-utf", methods=['POST'])
 @cross_origin()
 def macronize_utf():
     data = request.get_json(force=True)
@@ -110,7 +110,7 @@ def macronize_utf():
     return list
 
 # ROUTE SCAN
-@app.route("/scan")
+@app.route("/scan", methods=['POST'])
 @cross_origin()
 def scan():
     data = request.get_json(force=True)
@@ -120,7 +120,7 @@ def scan():
     return list
     
 # ROUTE MACRONIZE + SCAN
-@app.route("/macro-scan")
+@app.route("/macro-scan", methods=['POST'])
 @cross_origin()
 def macronize_scan():
     data = request.get_json(force=True)
@@ -132,7 +132,7 @@ def macronize_scan():
     return result
 
 # ROUTE HEXAMETER
-@app.route("/hexameter")
+@app.route("/hexameter", methods=['POST'])
 @cross_origin()
 def hexameter():
     data = request.get_json(force=True)
@@ -142,7 +142,7 @@ def hexameter():
     return json.dumps(list.__dict__)
 
 # ROUTE PENTAMETER
-@app.route("/pentameter")
+@app.route("/pentameter", methods=['POST'])
 @cross_origin()
 def pentameter():
     data = request.get_json(force=True)
@@ -152,7 +152,7 @@ def pentameter():
     return json.dumps(list.__dict__)
 
 # ROUTE HENDEKASYLLABUS
-@app.route("/hendecasyllabus")
+@app.route("/hendecasyllabus", methods=['POST'])
 @cross_origin()
 def hendecasyllabus():
     data = request.get_json(force=True)
@@ -162,7 +162,7 @@ def hendecasyllabus():
     return json.dumps(list.__dict__)
 
 # ROUTE ANALYSIS
-@app.route('/analyze')
+@app.route('/analyze', methods=['POST'])
 @cross_origin()
 def analysis():
     data = request.get_json(force=True)
@@ -173,7 +173,7 @@ def analysis():
     return jsonpickle.encode(cltk_doc.sentences[0], unpicklable=False)
 
 # ROUTE DEPENDENCY TREE
-@app.route('/dependency-tree')
+@app.route('/dependency-tree', methods=['POST'])
 @cross_origin()
 def dependency():
     data = request.get_json(force=True)
@@ -184,6 +184,25 @@ def dependency():
     dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
 
+# ROUTE TEST
+@app.route("/test1", methods=['POST'])
+@cross_origin()
+def test1():
+    return request.json["sentence"]
+# ROUTE TEST
+@app.route("/test2")
+def test2():
+    return request.get_data()["sentence"]
+# ROUTE TEST
+@app.route("/test3")
+def test3():
+    return request.data["sentence"]
+# ROUTE TEST
+@app.route("/test4",  methods=['POST'])
+@cross_origin()
+def test4():
+    data = request.get_json(force=True)
+    return data["sentence"]
 
 
 if __name__ == "__main__":
