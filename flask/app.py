@@ -1,4 +1,15 @@
 # Basic imports
+from cltk.dependency.tree import DependencyTree
+from cltk import NLP
+from cltk.prosody.lat.hexameter_scanner import HexameterScanner
+from cltk.prosody.lat.scanner import Scansion
+from cltk.prosody.lat.macronizer import Macronizer
+from cltk.tag.pos import POSTag
+from cltk.lemmatize.lat import LatinBackoffLemmatizer
+from cltk.morphology.lat import CollatinusDecliner
+from cltk.stem.lat import stem
+from cltk.data.fetch import FetchCorpus
+from cltk.utils import CLTK_DATA_DIR, get_file_with_progress_bar
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from pprint import pprint
@@ -6,16 +17,14 @@ import json
 import jsonpickle
 
 
-
 # NLTK Dependencies
 import stanza
-stanza.download("la") 
+stanza.download("la")
 model_url = "http://vectors.nlpl.eu/repository/20/56.zip"
-from cltk.utils import CLTK_DATA_DIR, get_file_with_progress_bar
-get_file_with_progress_bar(model_url="https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.la.vec", file_path="/root/cltk_data/lat/embeddings/fasttext/wiki.la.vec")
+get_file_with_progress_bar(model_url="https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.la.vec",
+                           file_path="/root/cltk_data/lat/embeddings/fasttext/wiki.la.vec")
 
 # CLTK Corpora
-from cltk.data.fetch import FetchCorpus
 corpus_importer = FetchCorpus(language="lat")
 corpus_importer.import_corpus('lat_models_cltk')
 corpus_importer.import_corpus('lat_text_perseus')
@@ -31,31 +40,27 @@ corpus_importer.import_corpus('lat_text_tesserae')
 corpus_importer.import_corpus('latin_text_corpus_grammaticorum_latinorum')
 
 # CLTK Stemmer
-from cltk.stem.lat import stem
 
 # CLTK Decliner
-from cltk.morphology.lat import CollatinusDecliner
 
 # CLTK Lemmatizer
-from cltk.lemmatize.lat import LatinBackoffLemmatizer
 
 # CLTK POSTagger
-from cltk.tag.pos import POSTag
 
 # CLTK Macronizer
-from cltk.prosody.lat.macronizer import Macronizer
 
 # CLTK Prosody Scanner
-from cltk.prosody.lat.scanner import Scansion
 
 # CLTK Hexameter Scanner
-from cltk.prosody.lat.hexameter_scanner import HexameterScanner
 
 # CLTK NLP-Pipeline
-from cltk import NLP
 
-#CLTK Dependency Module
-from cltk.dependency.tree import DependencyTree
+# CLTK Dependency Module
+
+# Initialize CLTK-Pipeline
+cltk_nlp = NLP(language="lat")
+cltk_nlp.pipeline.processes.pop(-1)
+
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -70,12 +75,16 @@ def tag(form):
     return json.dumps(list)
 
 # ROUTE: STEM
+
+
 @app.route("/stem/<form>")
 def get_stem(form):
     string = stem(form)
     return json.dumps(string)
 
 # ROUTE DECLINE
+
+
 @app.route("/decline/<form>")
 def decline(form):
     decliner = CollatinusDecliner()
@@ -83,6 +92,8 @@ def decline(form):
     return json.dumps(list)
 
 # ROUTE LEMMATIZE
+
+
 @app.route("/lemmatize/<form>")
 def lemmatize(form):
     lemmatizer = LatinBackoffLemmatizer()
@@ -90,6 +101,8 @@ def lemmatize(form):
     return json.dumps(list)
 
 # ROUTE MAMCRONIZE1
+
+
 @app.route("/macronize", methods=['POST'])
 @cross_origin()
 def macronize1():
@@ -100,6 +113,8 @@ def macronize1():
     return json.dumps(list)
 
 # ROUTE MAMCRONIZE2
+
+
 @app.route("/macronize-utf", methods=['POST'])
 @cross_origin()
 def macronize_utf():
@@ -110,6 +125,8 @@ def macronize_utf():
     return list
 
 # ROUTE SCAN
+
+
 @app.route("/scan", methods=['POST'])
 @cross_origin()
 def scan():
@@ -118,8 +135,10 @@ def scan():
     scanner = Scansion()
     list = scanner.scan_text(sentence)
     return list
-    
+
 # ROUTE MACRONIZE + SCAN
+
+
 @app.route("/macro-scan", methods=['POST'])
 @cross_origin()
 def macronize_scan():
@@ -132,6 +151,8 @@ def macronize_scan():
     return result
 
 # ROUTE HEXAMETER
+
+
 @app.route("/hexameter", methods=['POST'])
 @cross_origin()
 def hexameter():
@@ -142,6 +163,8 @@ def hexameter():
     return json.dumps(list.__dict__)
 
 # ROUTE PENTAMETER
+
+
 @app.route("/pentameter", methods=['POST'])
 @cross_origin()
 def pentameter():
@@ -152,6 +175,8 @@ def pentameter():
     return json.dumps(list.__dict__)
 
 # ROUTE HENDEKASYLLABUS
+
+
 @app.route("/hendecasyllabus", methods=['POST'])
 @cross_origin()
 def hendecasyllabus():
@@ -162,42 +187,50 @@ def hendecasyllabus():
     return json.dumps(list.__dict__)
 
 # ROUTE ANALYSIS
+
+
 @app.route('/analyze', methods=['POST'])
 @cross_origin()
 def analysis():
     data = request.get_json(force=True)
     text = data['text']
-    cltk_nlp = NLP(language="lat")
-    cltk_nlp.pipeline.processes.pop(-1)
     cltk_doc = cltk_nlp.analyze(text=text)
     return jsonpickle.encode(cltk_doc.sentences[0], unpicklable=False)
 
 # ROUTE DEPENDENCY TREE
+
+
 @app.route('/dependency-tree', methods=['POST'])
 @cross_origin()
 def dependency():
     data = request.get_json(force=True)
     sentence = data['sentence']
-    cltk_nlp = NLP(language="lat")
-    cltk_nlp.pipeline.processes.pop(-1)
     cltk_doc = cltk_nlp.analyze(text=sentence)
     dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
 
 # ROUTE TEST
+
+
 @app.route("/test1", methods=['POST'])
 @cross_origin()
 def test1():
     return request.json["sentence"]
 # ROUTE TEST
+
+
 @app.route("/test2")
 def test2():
     return request.get_data()["sentence"]
 # ROUTE TEST
+
+
 @app.route("/test3")
 def test3():
     return request.data["sentence"]
 # ROUTE TEST
+
+
 @app.route("/test4",  methods=['POST'])
 @cross_origin()
 def test4():
