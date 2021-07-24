@@ -8,54 +8,11 @@ from cltk.tag.pos import POSTag
 from cltk.lemmatize.lat import LatinBackoffLemmatizer
 from cltk.morphology.lat import CollatinusDecliner
 from cltk.stem.lat import stem
-from cltk.data.fetch import FetchCorpus
-from cltk.utils import CLTK_DATA_DIR, get_file_with_progress_bar
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-from pprint import pprint
 import json
 import jsonpickle
 
-
-# NLTK Dependencies
-import stanza
-stanza.download("la")
-model_url = "http://vectors.nlpl.eu/repository/20/56.zip"
-get_file_with_progress_bar(model_url="https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.la.vec",
-                           file_path="/root/cltk_data/lat/embeddings/fasttext/wiki.la.vec")
-
-# CLTK Corpora
-corpus_importer = FetchCorpus(language="lat")
-corpus_importer.import_corpus('lat_models_cltk')
-corpus_importer.import_corpus('lat_text_perseus')
-corpus_importer.import_corpus('latin_pos_lemmata_cltk')
-corpus_importer.import_corpus('lat_text_latin_library')
-corpus_importer.import_corpus('latin_proper_names_cltk')
-corpus_importer.import_corpus('latin_treebank_index_thomisticus')
-corpus_importer.import_corpus('latin_lexica_perseus')
-corpus_importer.import_corpus('latin_training_set_sentence_cltk')
-corpus_importer.import_corpus('latin_text_antique_digiliblt')
-corpus_importer.import_corpus('latin_text_poeti_ditalia')
-corpus_importer.import_corpus('lat_text_tesserae')
-corpus_importer.import_corpus('latin_text_corpus_grammaticorum_latinorum')
-
-# CLTK Stemmer
-
-# CLTK Decliner
-
-# CLTK Lemmatizer
-
-# CLTK POSTagger
-
-# CLTK Macronizer
-
-# CLTK Prosody Scanner
-
-# CLTK Hexameter Scanner
-
-# CLTK NLP-Pipeline
-
-# CLTK Dependency Module
 
 # Initialize CLTK-Pipeline
 cltk_nlp = NLP(language="lat")
@@ -208,34 +165,6 @@ def dependency():
     cltk_doc = cltk_nlp.analyze(text=sentence)
     dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
-
-# ROUTE TEST
-
-
-@app.route("/test1", methods=['POST'])
-@cross_origin()
-def test1():
-    return request.json["sentence"]
-# ROUTE TEST
-
-
-@app.route("/test2")
-def test2():
-    return request.get_data()["sentence"]
-# ROUTE TEST
-
-
-@app.route("/test3")
-def test3():
-    return request.data["sentence"]
-# ROUTE TEST
-
-
-@app.route("/test4",  methods=['POST'])
-@cross_origin()
-def test4():
-    data = request.get_json(force=True)
-    return data["sentence"]
 
 
 if __name__ == "__main__":
