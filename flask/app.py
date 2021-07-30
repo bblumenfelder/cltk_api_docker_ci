@@ -8,6 +8,7 @@ from cltk.tag.pos import POSTag
 from cltk.lemmatize.lat import LatinBackoffLemmatizer
 from cltk.morphology.lat import CollatinusDecliner
 from cltk.stem.lat import stem
+from cltk.sentence.lat import LatinPunktSentenceTokenizer
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
@@ -143,9 +144,19 @@ def hendecasyllabus():
     list = hendecasyllabus_scanner.scan(verse)
     return json.dumps(list.__dict__)
 
+
+# ROUTE TOKENIZATION
+@app.route('/tokenize', methods=['POST'])
+@cross_origin()
+def analysis():
+    data = request.get_json(force=True)
+    text = data['text']
+    splitter = LatinPunktSentenceTokenizer()
+    sentences = splitter.tokenize(text)
+    return jsonpickle.encode(sentences, unpicklable=False)
+
+
 # ROUTE ANALYSIS
-
-
 @app.route('/analyze', methods=['POST'])
 @cross_origin()
 def analysis():
