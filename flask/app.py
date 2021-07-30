@@ -148,7 +148,7 @@ def hendecasyllabus():
 # ROUTE TOKENIZATION
 @app.route('/tokenize', methods=['POST'])
 @cross_origin()
-def analysis():
+def sentence_tokenization():
     data = request.get_json(force=True)
     text = data['text']
     splitter = LatinPunktSentenceTokenizer()
