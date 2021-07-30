@@ -151,7 +151,7 @@ def hendecasyllabus():
 def sentence_tokenization():
     data = request.get_json(force=True)
     text = data['text']
-    splitter = LatinPunktSentenceTokenizer()
+    splitter = LatinPunktSentenceTokenizer(strict=True)
     sentences = splitter.tokenize(text)
     return jsonpickle.encode(sentences, unpicklable=False)
 
