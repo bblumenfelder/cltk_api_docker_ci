@@ -106,7 +106,7 @@ def macronize_scan():
     macronizer = Macronizer('tag_ngram_123_backoff')
     sentence_macronized = macronizer.macronize_text(sentence)
     result = scanner.scan_text(sentence_macronized)
-    return result
+    return jsonpickle.encode(result, unpicklable=False)
 
 # ROUTE HEXAMETER
 
