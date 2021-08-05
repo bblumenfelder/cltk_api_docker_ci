@@ -129,6 +129,8 @@ def hexameter():
 def pentameter():
     data = request.get_json(force=True)
     verse = data['verse']
+    macronizer = Macronizer('tag_ngram_123_backoff')
+    verse = macronizer.macronize_text(verse)
     pentameter_scanner = PentameterScanner()
     list = pentameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
