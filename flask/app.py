@@ -117,6 +117,8 @@ def macronize_scan():
 def hexameter():
     data = request.get_json(force=True)
     verse = data['verse']
+    macronizer = Macronizer('tag_ngram_123_backoff')
+    verse = macronizer.macronize_text(verse)
     hexameter_scanner = HexameterScanner()
     list = hexameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
