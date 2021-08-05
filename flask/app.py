@@ -2,6 +2,7 @@
 from cltk.dependency.tree import DependencyTree
 from cltk import NLP
 from cltk.prosody.lat.hexameter_scanner import HexameterScanner
+from cltk.prosody.lat.pentameter_scanner import PentameterScanner
 from cltk.prosody.lat.scanner import Scansion
 from cltk.prosody.lat.macronizer import Macronizer
 from cltk.tag.pos import POSTag
