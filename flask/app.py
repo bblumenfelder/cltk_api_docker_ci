@@ -5,6 +5,7 @@ from cltk.prosody.lat.hexameter_scanner import HexameterScanner
 from cltk.prosody.lat.pentameter_scanner import PentameterScanner
 from cltk.prosody.lat.scanner import Scansion
 from cltk.prosody.lat.macronizer import Macronizer
+from cltk.prosody.lat.scansion_formatter import ScansionFormatter
 from cltk.tag.pos import POSTag
 from cltk.lemmatize.lat import LatinBackoffLemmatizer
 from cltk.morphology.lat import CollatinusDecliner
@@ -129,8 +130,12 @@ def hexameter():
         macronizer = Macronizer(macronizertype)
         verse = macronizer.macronize_text(verse)
     hexameter_scanner = HexameterScanner()
-    list = hexameter_scanner.scan(verse)
-    return json.dumps(list.__dict__)
+    Result = hexameter_scanner.scan(verse).__dict__
+    scansion_formatter = ScansionFormatter()
+    formatted = scansion_formatter.hexameter(
+        Result['scansion'].replace(" ", ""))
+    Result['formatted'] = formatted
+    return json.dumps(Result)
 
 # ROUTE PENTAMETER
 
@@ -140,8 +145,17 @@ def hexameter():
 def pentameter():
     data = request.get_json(force=True)
     verse = data['verse']
-    macronizer = Macronizer('tag_ngram_123_backoff')
-    verse = macronizer.macronize_text(verse)
+    if("macronize" in data):
+        macronize = data['macronize']
+    else:
+        macronize = True
+    if ("macronizer" in data):
+        macronizertype = data['macronizer']
+    else:
+        macronizertype = 'tag_ngram_123_backoff'
+    if(macronize == True):
+        macronizer = Macronizer(macronizertype)
+        verse = macronizer.macronize_text(verse)
     pentameter_scanner = PentameterScanner()
     list = pentameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
