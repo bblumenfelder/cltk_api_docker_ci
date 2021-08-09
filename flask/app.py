@@ -117,8 +117,14 @@ def macronize_scan():
 def hexameter():
     data = request.get_json(force=True)
     verse = data['verse']
-    macronize = data['macronize'] if data['macronize'] else True
-    macronizertype = data['macronizer'] if data['macronizer'] else 'tag_ngram_123_backoff'
+    if("macronize" in data):
+        macronize = data['macronize']
+    else:
+        macronize = True
+    if ("macronizer" in data):
+        macronizertype = data['macronizer']
+    else:
+        macronizertype = 'tag_ngram_123_backoff'
     if(macronize == True):
         macronizer = Macronizer(macronizertype)
         verse = macronizer.macronize_text(verse)
