@@ -117,8 +117,11 @@ def macronize_scan():
 def hexameter():
     data = request.get_json(force=True)
     verse = data['verse']
-    macronizer = Macronizer('tag_ngram_123_backoff')
-    verse = macronizer.macronize_text(verse)
+    macronize = data['macronize'] if data['macronize'] else True
+    macronizertype = data['macronizer'] if data['macronizer'] else 'tag_ngram_123_backoff'
+    if(macronize == True):
+        macronizer = Macronizer(macronizertype)
+        verse = macronizer.macronize_text(verse)
     hexameter_scanner = HexameterScanner()
     list = hexameter_scanner.scan(verse)
     return json.dumps(list.__dict__)
@@ -181,6 +184,14 @@ def dependency():
     cltk_doc = cltk_nlp.analyze(text=sentence)
     dep_tree = DependencyTree.to_tree(cltk_doc.sentences[0])
     return jsonpickle.encode(dep_tree.get_dependencies(), unpicklable=False)
+
+# ROUTE TEST
+
+
+@app.route('/test')
+@cross_origin()
+def test():
+    return "Successful"
 
 
 if __name__ == "__main__":
