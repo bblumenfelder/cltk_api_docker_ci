@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y tzdata && apt-get install -y \
 RUN git clone https://github.com/Alatius/morpheus.git
 RUN cd morpheus/src && make && make install && cd .. && ./update.sh && ./update.sh && echo "salve" | MORPHLIB=stemlib bin/cruncher -L
 # Add none root user
-RUN sudo unzip RFTagger.zip && sudo chmod -R 777 RFTagger && cd RFTagger/src && make && make install && cd ../.. && sudo ./train-rftagger.sh
+RUN sudo unzip RFTagger.zip && sudo chmod -R 777 RFTagger && cd RFTagger/src && make && make install && cd ../.. && ./train-rftagger.sh
 COPY requirements.txt import_corpora.py /
 ADD . /
 RUN pip install -r requirements.txt
