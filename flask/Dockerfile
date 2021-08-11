@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y tzdata && apt-get install -y \
     python3-dev \
     python3-pip \
     python-is-python3 \
+    locales \
     git \
     sudo \
     build-essential \
