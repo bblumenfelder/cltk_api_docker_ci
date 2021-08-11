@@ -4,11 +4,17 @@ COPY macronizer /
 ENV TZ=Europe/Berlin
 ARG DEBIAN_FRONTEND="noninteractive"
 RUN apt-get update && apt-get install -y tzdata && apt-get install -y \
+    python3-dev \
+    python3-pip \
+    python-is-python3 \
+    python3-psycopg2 \
     git \
     sudo \
     build-essential \
     libfl-dev \
     unzip 
+RUN git clone https://github.com/Alatius/morpheus.git
+RUN cd morpheus/src && make && make install && cd .. && ./update.sh && ./update.sh && echo "salve" | MORPHLIB=stemlib bin/cruncher -L
 RUN useradd admin && echo "admin:admin" | chpasswd && adduser admin sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
     /etc/sudoers
