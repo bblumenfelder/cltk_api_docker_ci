@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y tzdata && apt-get install -y \
     libfl-dev \
     unzip \
     python3-psycopg2 
+RUN locale-gen en_US.UTF-8
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN git clone https://github.com/Alatius/morpheus.git
 RUN cd morpheus/src && make && make install && cd .. && ./update.sh && ./update.sh && echo "salve" | MORPHLIB=stemlib bin/cruncher -L
 # Add none root user
