@@ -14,7 +14,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
     /etc/sudoers
 RUN sudo unzip RFTagger.zip
 RUN sudo chmod -R 777 RFTagger
-RUN sudo chmod -R 777 /
+RUN sudo chmod -R 777 ./
 RUN cd RFTagger/src && sudo make && sudo make install && cd ../..
 USER admin
 RUN sudo chmod -R 777 ./train-rftagger.sh && ./train-rftagger.sh
