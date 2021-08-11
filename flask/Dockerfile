@@ -18,7 +18,7 @@ RUN cd morpheus/src && make && make install && cd .. && ./update.sh && ./update.
 # Add none root user
 RUN  useradd admin && echo "admin:admin" | chpasswd && adduser admin sudo
 USER admin
-RUN unzip RFTagger.zip && cd RFTagger/src && make && make install && cd ../.. && ./train-rftagger.sh
+RUN unzip RFTagger.zip && cd RFTagger/src && make && make install && cd ../.. && sudo ./train-rftagger.sh
 COPY requirements.txt import_corpora.py /
 ADD . /
 RUN pip install -r requirements.txt
