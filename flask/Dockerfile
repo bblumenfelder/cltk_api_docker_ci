@@ -8,13 +8,17 @@ RUN apt-get update && apt-get install -y tzdata && apt-get install -y \
     python3-pip \
     python-is-python3 \
     git \
+    sudo \
     build-essential \
     libfl-dev \
     unzip \
     python3-psycopg2 
 RUN git clone https://github.com/Alatius/morpheus.git
 RUN cd morpheus/src && make && make install && cd .. && ./update.sh && ./update.sh && echo "salve" | MORPHLIB=stemlib bin/cruncher -L
-RUN unzip RFTagger.zip && cd RFTagger/src && make && make install && cd ../.. && sudo ./train-rftagger.sh
+# Add none root user
+RUN  useradd admin && echo "admin:admin" | chpasswd && adduser admin sudo
+USER admin
+RUN unzip RFTagger.zip && cd RFTagger/src && make && make install && cd ../.. && ./train-rftagger.sh
 COPY requirements.txt import_corpora.py /
 ADD . /
 RUN pip install -r requirements.txt
