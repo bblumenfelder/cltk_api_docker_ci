@@ -26,7 +26,7 @@ USER admin
 RUN sudo chmod -R 777 ./train-rftagger.sh && ./train-rftagger.sh
 COPY requirements.txt import_corpora.py /
 ADD . /
-RUN pip install -r requirements.txt
+RUN sudo pip install -r requirements.txt
 RUN python import_corpora.py
 
 CMD ["uwsgi", "app.ini"]
