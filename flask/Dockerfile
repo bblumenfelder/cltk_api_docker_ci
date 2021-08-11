@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -y tzdata && apt-get install -y \
     build-essential \
     libfl-dev \
     unzip 
-RUN  useradd admin && echo "admin:admin" | chpasswd && adduser admin sudo
+RUN useradd admin && echo "admin:admin" | chpasswd && adduser admin sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
+    /etc/sudoers
 USER admin
 RUN sudo unzip RFTagger.zip
 RUN sudo chmod -R 777 RFTagger
