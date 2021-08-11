@@ -15,7 +15,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 USER admin
 RUN sudo unzip RFTagger.zip
 RUN sudo chmod -R 777 RFTagger
-RUN sudo cd RFTagger/src && sudo make && sudo make install && cd ../.. && sudo ./train-rftagger.sh
+RUN cd RFTagger/src && sudo make && sudo make install && cd ../.. && sudo ./train-rftagger.sh
 COPY requirements.txt import_corpora.py /
 ADD . /
 RUN pip install -r requirements.txt
