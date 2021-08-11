@@ -11,6 +11,8 @@ from cltk.lemmatize.lat import LatinBackoffLemmatizer
 from cltk.morphology.lat import CollatinusDecliner
 from cltk.stem.lat import stem
 from cltk.sentence.lat import LatinPunktSentenceTokenizer
+from macronizer import Macronizer
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
@@ -83,6 +85,17 @@ def macronize_utf():
     macronizer = Macronizer('tag_ngram_123_backoff')
     list = macronizer.macronize_text(sentence)
     return list
+
+
+@app.route('/macronize-ambig', methods=['POST'])
+@cross_origin()
+def macronize2():
+    data = request.get_json(force=True)
+    sentence = data['sentence']
+    macronizer = Macronizer()
+    macronizedtext = macronizer.macronize(sentence, performitoj=True, markambigs=True)
+    return macronizedtext
+
 
 # ROUTE SCAN
 

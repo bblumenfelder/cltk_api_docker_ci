@@ -4,12 +4,31 @@ services:
 
   flask:
     build: ./flask
+    depends_on: 
+      - db
     container_name: flask
+    networks:
+      - default
     restart: always
     environment:
       - APP_NAME=cltk_api_docker_ci
+      - DATABASE_URL=postgresql://theusername:thepassword@db:5432/macronizer
     expose:
       - 8080
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: theusername
+      POSTGRES_PASSWORD: thepassword
+      POSTGRES_DB: macronizer
+    networks:
+      - default
+    ports:
+      - 5405:5432
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
 
   nginx:
     build: ./nginx
@@ -17,3 +36,6 @@ services:
     restart: always
     ports:
       - "80:80"
+
+volumes:
+  postgres_data:
