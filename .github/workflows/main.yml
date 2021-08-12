@@ -31,10 +31,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            docker kill $(docker ps -q)
-            docker rm $(docker ps -a -q)
-            docker rmi $(docker images -q)
-            docker image prune
+# docker kill $(docker ps -q)
+            # docker rm $(docker ps -a -q)
+            # docker rmi $(docker images -q)
+            docker image prune -y
             touch /tmp/uwsgi.log
             cd cltk_api_docker_ci/
             git init
