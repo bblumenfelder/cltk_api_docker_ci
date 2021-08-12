@@ -38,5 +38,3 @@ jobs:
             git pull https://github.com/bblumenfelder/cltk_api_docker_ci.git
             docker-compose up -d --build
             exit
-      - name: Run tests
-        run: coverage run app_test.py

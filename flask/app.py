@@ -91,9 +91,18 @@ def macronize_utf():
 @cross_origin()
 def macronize2():
     data = request.get_json(force=True)
+    if("tojson" in data and data['tojson'] == "True"):
+        tojson = True
+    else:
+        tojson = False
+    if("minimaltext" in data and data['minimaltext'] == "True"):
+        minimaltext = True
+    else:
+        minimaltext = False
     sentence = data['sentence']
     macronizer = Macronizer()
-    macronizedtext = macronizer.macronize(sentence, performitoj=True, markambigs=True)
+    macronizedtext = macronizer.macronize(
+        sentence, performitoj=True, markambigs=True, tojson=tojson, minimaltext=minimaltext)
     return macronizedtext
 
 
