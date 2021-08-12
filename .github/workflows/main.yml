@@ -31,6 +31,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
+            docker kill $(docker ps -q)
+            docker rm $(docker ps -a -q)
+            docker rmi $(docker images -q)
             docker image prune
             touch /tmp/uwsgi.log
             cd cltk_api_docker_ci/
