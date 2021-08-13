@@ -99,11 +99,18 @@ def macronize2():
         minimaltext = True
     else:
         minimaltext = False
+    if("ambiguousvowels" in data and data['ambiguousvowels'] == "True"):
+        ambiguousvowels = True
+    else:
+        ambiguousvowels = False
     sentence = data['sentence']
     macronizer = Macronizer()
     macronizedtext = macronizer.macronize(
-        sentence, performitoj=True, markambigs=True, tojson=tojson, minimaltext=minimaltext)
-    return macronizedtext
+        sentence, performitoj=True, markambigs=True, tojson=tojson, minimaltext=minimaltext, ambiguousvowels=ambiguousvowels)
+    if (ambiguousvowels == True):
+        return json.dumps(macronizedtext)
+    else:
+        return macronizedtext
 
 
 # ROUTE SCAN

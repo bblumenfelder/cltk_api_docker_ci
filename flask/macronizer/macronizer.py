@@ -877,6 +877,64 @@ class Tokenization:
         return "".join(result)
     # enddef
 
+    def ambiguousvowels(self, markambiguous):
+
+        finalletterlist = []
+        for token in self.tokens:
+
+            if token.isword:
+                unicodetext = postags.unicodeaccents(token.macronized)
+                if markambiguous:
+                    unicodetext = re.sub(
+                        r"([āēīōūȳĀĒĪŌŪȲaeiouyAEIOUY])", "\\1", unicodetext)
+                    if token.isunknown:
+                        letterlist = list(unicodetext)
+                        for letter in letterlist:
+                            finalletterlist.append(
+                                {"letter": letter, "ambiguous": "false"})
+                    # AMBIGUOUS WORDS
+                    elif len(set([x.replace("^", "") for x in token.accented])) > 1:
+                        # FIND SAFEST VARIANT WITH FEWEST MACRONS
+                        safestvariant = min(token.accented, key=len)
+                        # FILTER OUT SAFEST VARIANT FROM LIST OF VARIANTS
+                        listwithouthshortestvariant = list(filter(
+                            lambda filtervariant: filtervariant != safestvariant, token.accented))
+                        macronizedsafestvariant = postags.unicodeaccents(
+                            safestvariant)
+                        letterlistofmacronizedsafestvariant = list(
+                            macronizedsafestvariant)
+                        # Loop trough letters
+                        for index, letter in enumerate(letterlistofmacronizedsafestvariant):
+                            # Compare letter of safest variant against every letter of other variants
+                            for ambiguousvariant in listwithouthshortestvariant:
+                                macronizedambiguousvariant = postags.unicodeaccents(
+                                    ambiguousvariant)
+                                if(list(macronizedambiguousvariant)[index] == letter):
+                                    finalletterlist.append(
+                                        {"letter": letter, "ambiguous": "false"})
+                                else:
+                                    finalletterlist.append(
+                                        {"letter": letter, "ambiguous": "true"})
+
+                    else:
+                        letterlist = list(unicodetext)
+                        for letter in letterlist:
+                            finalletterlist.append(
+                                {"letter": letter, "ambiguous": "false"})
+            # token is not a word
+            else:
+                if markambiguous:
+                    finalletterlist.append(
+                        {"letter": token.text, "ambiguous": "false"})
+                else:
+                    letterlist = list(unicodetext)
+                    for letter in letterlist:
+                        finalletterlist.append(
+                            {"letter": letter, "ambiguous": "false"})
+        return finalletterlist
+
+    # enddef
+
     def onlyunambigs(self, markambiguous):
         result = []
         for token in self.tokens:
@@ -1126,6 +1184,11 @@ class Macronizer:
             domacronize, alsomaius, performutov, performitoj)
         return self.tokenization.onlyunambigs(markambigs)
 
+    def getambiguousvowels(self, domacronize=True, alsomaius=False, performutov=False, performitoj=False, markambigs=True):
+        self.tokenization.macronize(
+            domacronize, alsomaius, performutov, performitoj)
+        return self.tokenization.ambiguousvowels(markambigs)
+
     def gettext(self, domacronize=True, alsomaius=False, performutov=False, performitoj=False, markambigs=False):
         self.tokenization.macronize(
             domacronize, alsomaius, performutov, performitoj)
@@ -1138,12 +1201,14 @@ class Macronizer:
         return self.tokenization.tojson()
     # enddef
 
-    def macronize(self, text, domacronize=True, alsomaius=False, performutov=False, performitoj=False, markambigs=False, minimaltext=False, tojson=False):
+    def macronize(self, text, domacronize=True, alsomaius=False, performutov=False, performitoj=False, markambigs=False, minimaltext=False, tojson=False, ambiguousvowels=False):
         self.settext(text)
         if(minimaltext == True):
             return self.getminimaltext(domacronize, alsomaius, performutov, performitoj, markambigs)
         elif(tojson == True):
             return self.getjson(domacronize, alsomaius, performutov, performitoj)
+        elif(ambiguousvowels == True):
+            return self.getambiguousvowels(domacronize, alsomaius, performutov, performitoj)
         else:
             return self.gettext(domacronize, alsomaius, performutov, performitoj, markambigs)
     # enddef
