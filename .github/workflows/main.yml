@@ -29,7 +29,8 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          password: ${{ secrets.PASSWORD }
+          command_timeout: 20m
           script: |
             docker image prune -y
             touch /tmp/uwsgi.log
