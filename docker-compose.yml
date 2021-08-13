@@ -5,6 +5,7 @@ services:
 
   db:
     image: postgres:latest
+    container_name: db
     environment:
       POSTGRES_USER: theusername
       POSTGRES_PASSWORD: thepassword

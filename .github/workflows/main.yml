@@ -38,5 +38,5 @@ jobs:
             cd cltk_api_docker_ci/
             git init
             git pull https://github.com/bblumenfelder/cltk_api_docker_ci.git
-            docker-compose up -d --build
+            docker-compose up -d --force-recreate
             exit
