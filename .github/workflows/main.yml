@@ -32,8 +32,9 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           command_timeout: 20m
           script: |
-            docker image prune -y
+            docker image prune -a -f
             touch /tmp/uwsgi.log
+            rm -rf cltk_api_docker_ci
             cd cltk_api_docker_ci/
             git init
             git pull https://github.com/bblumenfelder/cltk_api_docker_ci.git
