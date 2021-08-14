@@ -12,12 +12,13 @@ from cltk.morphology.lat import CollatinusDecliner
 from cltk.stem.lat import stem
 from cltk.sentence.lat import LatinPunktSentenceTokenizer
 from macronizer import Macronizer
+from scanner import scan_cltk_format
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
 import jsonpickle
-
+import unicodedata
 
 # Initialize CLTK-Pipeline
 cltk_nlp = NLP(language="lat")
@@ -87,30 +88,59 @@ def macronize_utf():
     return list
 
 
-@app.route('/macronize-ambig', methods=['POST'])
+@app.route('/alatius/macronize/ambig-html', methods=['POST'])
 @cross_origin()
-def macronize2():
+def alatius_macronize_ambig_html():
     data = request.get_json(force=True)
-    if("tojson" in data and data['tojson'] == "True"):
-        tojson = True
-    else:
-        tojson = False
-    if("minimaltext" in data and data['minimaltext'] == "True"):
-        minimaltext = True
-    else:
-        minimaltext = False
-    if("ambiguousvowels" in data and data['ambiguousvowels'] == "True"):
-        ambiguousvowels = True
-    else:
-        ambiguousvowels = False
     sentence = data['sentence']
     macronizer = Macronizer()
     macronizedtext = macronizer.macronize(
-        sentence, performitoj=True, markambigs=True, tojson=tojson, minimaltext=minimaltext, ambiguousvowels=ambiguousvowels)
-    if (ambiguousvowels == True):
-        return json.dumps(macronizedtext)
-    else:
-        return macronizedtext
+        sentence, performitoj=True, markambigs=True, tojson=False, minimaltext=False, ambiguousvowels=False)
+    return macronizedtext
+
+
+@app.route('/alatius/macronize/ambig-json', methods=['POST'])
+@cross_origin()
+def alatius_macronize_ambig_json():
+    data = request.get_json(force=True)
+    sentence = data['sentence']
+    macronizer = Macronizer()
+    macronizedtext = macronizer.macronize(
+        sentence, performitoj=True, markambigs=True, tojson=True, minimaltext=False, ambiguousvowels=False)
+    return macronizedtext
+
+
+@app.route('/alatius/macronize/ambig-vowels', methods=['POST'])
+@cross_origin()
+def alatius_macronize_ambig_vowels():
+    data = request.get_json(force=True)
+    sentence = data['sentence']
+    macronizer = Macronizer()
+    macronizedtext = macronizer.macronize(
+        sentence, performitoj=True, markambigs=True, tojson=False, minimaltext=False, ambiguousvowels=True)
+    return json.dumps(macronizedtext)
+
+
+@app.route('/alatius/macronize/min', methods=['POST'])
+@cross_origin()
+def alatius_macronize_min():
+    data = request.get_json(force=True)
+    sentence = data['sentence']
+    macronizer = Macronizer()
+    macronizedtext = macronizer.macronize(
+        sentence, performitoj=True, markambigs=False, tojson=False, minimaltext=True, ambiguousvowels=False)
+    return macronizedtext
+
+
+@app.route('/alatius/scan', methods=['POST'])
+@cross_origin()
+def alatius_scan():
+    data = request.get_json(force=True)
+    verse = unicodedata.normalize('NFC', data['sentence'])
+    meter = data['meter']
+    scansion = scan_cltk_format(verse, meter)
+
+    return json.dumps(scansion)
 
 
 # ROUTE SCAN
