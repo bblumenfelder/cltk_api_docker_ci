@@ -6,19 +6,22 @@ from cltk.prosody.lat.pentameter_scanner import PentameterScanner
 from cltk.prosody.lat.scanner import Scansion
 from cltk.prosody.lat.macronizer import Macronizer
 from cltk.prosody.lat.scansion_formatter import ScansionFormatter
+from cltk.prosody.lat.syllabifier import Syllabifier
 from cltk.tag.pos import POSTag
 from cltk.lemmatize.lat import LatinBackoffLemmatizer
 from cltk.morphology.lat import CollatinusDecliner
 from cltk.stem.lat import stem
 from cltk.sentence.lat import LatinPunktSentenceTokenizer
+from cltk.prosody.lat.verse_scanner import VerseScanner
 from macronizer import Macronizer
 from scanner import scan_cltk_format
-
+from format_scansion import formatScansion
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
 import jsonpickle
 import unicodedata
+import re
 
 # Initialize CLTK-Pipeline
 cltk_nlp = NLP(language="lat")
@@ -139,6 +142,16 @@ def alatius_scan():
     verse = unicodedata.normalize('NFC', data['sentence'])
     meter = data['meter']
     scansion = scan_cltk_format(verse, meter)
+    syllabifier = Syllabifier()
+    versescanner = VerseScanner()
+    elided_verse = re.sub(
+        ' +', ' ', versescanner.elide_all(scansion['accented']))
+    syllables = syllabifier.syllabify(elided_verse)
+    formatted_scansion = formatScansion(
+        scansion['scansion'], elided_verse, syllables)
+    if (formatted_scansion):
+        scansion['formatted'] = formatted_scansion
+        scansion['accented'] = elided_verse
 
     return json.dumps(scansion)
 
